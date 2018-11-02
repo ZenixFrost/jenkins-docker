@@ -1,0 +1,31 @@
+FROM docker as docker
+FROM maven as maven
+
+FROM jenkins/jnlp-slave:latest
+USER root
+COPY --from=docker /usr/local/bin/ /usr/local/bin/
+COPY --from=maven /usr/share/maven /usr/share/maven
+COPY --from=maven /usr/local/bin/mvn-entrypoint.sh /usr/local/bin/
+ARG USER_HOME_DIR="/root"
+ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
+RUN ln -s /usr/share/maven/bin/mvn /usr/local/bin/mvn
+# ENTRYPOINT ["/usr/local/bin/mvn-entrypoint.sh"]
+# CMD ["mvn"]
+
+# RUN apt-get update && \
+#     apt-get -y install apt-transport-https \
+#         ca-certificates \
+#         curl \
+#         gnupg2 \
+#         software-properties-common && \
+#     curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg > /tmp/dkey; apt-key add /tmp/dkey && \
+#     add-apt-repository \
+#         "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
+#         $(lsb_release -cs) \
+#         stable" && \
+#     apt-get update && \
+#     apt-get -y install docker-ce && \
+# 	apt-get install -y maven
+
+#RUN usermod -aG docker jenkins
+#USER jenkins
