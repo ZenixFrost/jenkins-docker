@@ -1,7 +1,7 @@
 FROM docker as docker
-FROM maven as maven
+FROM maven:3.5.4-alpine as maven
 
-FROM jenkins/jnlp-slave:latest
+FROM jenkins/jnlp-slave:3.27-1-alpine
 USER root
 COPY --from=docker /usr/local/bin/ /usr/local/bin/
 COPY --from=maven /usr/share/maven /usr/share/maven
